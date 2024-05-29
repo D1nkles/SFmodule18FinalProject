@@ -13,17 +13,17 @@ class VideoManager
         youtubeClient = new YoutubeClient();
     }
 
-    public async void GetVideoInfo() 
+    public async Task GetVideoInfo() 
     {
         var videoDescription = await youtubeClient.Videos.GetAsync(_videoURL);
         string title = videoDescription.Title;
         string description = videoDescription.Description;
 
         Console.WriteLine($"Название видео: {title} \n \n" +
-                          $"Описание видео: {description}");
+                          $"Описание видео: {description}\n");
     }
 
-    public async void DownloadVideo() 
+    public async Task DownloadVideo() 
     {
         var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync(_videoURL);
         var streamInfo = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality();
