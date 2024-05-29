@@ -1,5 +1,6 @@
 ﻿using YoutubeExplode;
 using YoutubeExplode.Converter;
+using YoutubeExplode.Videos.Streams;
 
 class VideoManager
 {
@@ -16,12 +17,18 @@ class VideoManager
     {
         var videoDescription = await youtubeClient.Videos.GetAsync(_videoURL);
         string title = videoDescription.Title;
-        Console.WriteLine(title);
+        string description = videoDescription.Description;
+
+        Console.WriteLine($"Название видео: {title} \n \n" +
+                          $"Описание видео: {description}");
     }
 
-    public void DownloadVideo() 
+    public async void DownloadVideo() 
     {
-        youtubeClient.Videos.DownloadAsync(_videoURL, Environment.CurrentDirectory, builder => builder.SetPreset(ConversionPreset.UltraFast));
+        var streamManifest = await youtubeClient.Videos.Streams.GetManifestAsync(_videoURL);
+        var streamInfo = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality();
+
+        await youtubeClient.Videos.Streams.DownloadAsync(streamInfo, $"video.{streamInfo.Container}");
     }
 }
 
